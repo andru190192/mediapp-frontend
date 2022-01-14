@@ -12,34 +12,33 @@ export const getDoctorsWS = async () => {
   }
 }
 
-export const saveDoctorWS = async (specialty) => {
+export const saveDoctorWS = async (doctor) => {
   try {
-    return await axios.post(`${URL_BASE}/doctors`, specialty);
+    console.log('doctor save', doctor);
+    return await axios.post(`${URL_BASE}/doctors`, doctor);
   } catch (error) {
     console.log(error);
     return Promise.reject({
-      ...response,
       statusCode: (error.response && error.response.status) || 404,
     });
   }
 }
 
-export const updateDoctorWS = async (specialty) => {
+export const updateDoctorWS = async (doctor) => {
   try {
-    console.log('specialty update', specialty);
-    return await axios.put(`${URL_BASE}/doctors`, specialty);
+    console.log('doctor update', doctor);
+    return await axios.put(`${URL_BASE}/doctors`, doctor);
   } catch (error) {
     console.log(error);
     return Promise.reject({
-      ...response,
       statusCode: (error.response && error.response.status) || 404,
     });
   }
 }
 
-export const deleteDoctorWS = async (specialty) => {
+export const deleteDoctorWS = async (doctor) => {
   try {
-    return await axios.delete(`${URL_BASE}/doctors/${specialty.id}`);
+    return await axios.delete(`${URL_BASE}/doctors/${doctor.id}`);
   } catch (error) {
     console.log(error);
     return Promise.reject({

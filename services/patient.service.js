@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { URL_BASE } from '../environments/env.json';
 
-export const getSpecialtiesWS = async () => {
+export const getPatientWS = async () => {
   try {
-    return await axios.get(`${URL_BASE}/specialties`);
+    return await axios.get(`${URL_BASE}/patients`);
   } catch (error) {
     console.log(error);
     return Promise.reject({
@@ -12,9 +12,9 @@ export const getSpecialtiesWS = async () => {
   }
 }
 
-export const saveSpecialtyWS = async (specialty) => {
+export const savePatientWS = async (patient) => {
   try {
-    return await axios.post(`${URL_BASE}/specialties`, specialty);
+    return await axios.post(`${URL_BASE}/patients`, patient);
   } catch (error) {
     console.log(error);
     return Promise.reject({
@@ -23,10 +23,10 @@ export const saveSpecialtyWS = async (specialty) => {
   }
 }
 
-export const updateSpecialtyWS = async (specialty) => {
+export const updatePatientWS = async (patient) => {
   try {
-    console.log('specialty update', specialty);
-    return await axios.put(`${URL_BASE}/specialties`, specialty);
+    console.log('patient update', patient);
+    return await axios.put(`${URL_BASE}/patients`, patient);
   } catch (error) {
     console.log(error);
     return Promise.reject({
@@ -35,9 +35,9 @@ export const updateSpecialtyWS = async (specialty) => {
   }
 }
 
-export const deleteSpecialtyWS = async (specialty) => {
+export const deletePatientWS = async (patient) => {
   try {
-    return await axios.delete(`${URL_BASE}/specialties/${specialty.id}`);
+    return await axios.delete(`${URL_BASE}/patients/${patient.id}`);
   } catch (error) {
     console.log(error);
     return Promise.reject({

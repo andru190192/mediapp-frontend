@@ -93,26 +93,30 @@ export default function Specialties() {
 
   const saveSpecialty = async () => {
     setSubmitted(true);
-    const _specialties = [...specialties];
 
     if (specialty.name.trim() && specialty.description.trim()) {
-      setSpecialtyDialog(false);
+      setSubmitted(false);
       let _specialty = {...specialty};
       if (specialty.id) {
-        const { data: specialtyResponse } = await updateSpecialtyWS(_specialty);
-        setSpecialties(specialties.map((val) => {
-          if (val.id === specialty.id) val = specialtyResponse;
-          return val;
-        }))
-        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Especialidad Actualizada', life: 3000 });
+        try {
+          const { data: specialtyResponse } = await updateSpecialtyWS(_specialty);
+          setSpecialties(specialties.map((val) => (val.id === specialty.id) ? val = specialtyResponse : val))
+          toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Especialidad Actualizada', life: 5000 });
+        } catch (error) {
+          return toast.current.show({ severity: 'error', summary: 'Error', detail: 'Ocurrio un problema al actualizar la especialidad', life: 5000 });
+        }
       } else {
-        // _specialty.image = 'product-placeholder.svg';
-        const { data: specialtyResponse } = await saveSpecialtyWS(_specialty);
-        setSpecialties([...specialties, specialtyResponse]);
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
+        try {
+          const { data: specialtyResponse } = await saveSpecialtyWS(_specialty);
+          setSpecialties([...specialties, specialtyResponse]);
+          toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Especialidad Creada', life: 5000 });
+        } catch (error) {
+          return toast.current.show({ severity: 'error', summary: 'Error', detail: 'Ocurrio un problema al crear la especialidad', life: 5000 });
+        }
       }
 
       setSpecialty(emptySpecialty);
+      setSpecialtyDialog(false);
     }
   }
 
@@ -132,7 +136,7 @@ export default function Specialties() {
     setDeleteDialog(false);
     
     setSpecialty(emptySpecialty);
-    toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Especialidad Eliminada', life: 3000 });
+    toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Especialidad Eliminada', life: 5000 });
   }
 
   const specialtyDialogFooter = (
@@ -186,7 +190,7 @@ export default function Specialties() {
         <Column header="Gestionar" body={actionBodyTemplate} exportable={false} style={{ justifyContent: 'center', minWidth: '8rem' }}></Column>
       </DataTable>
 
-      <Dialog visible={specialtyDialog} style={{ width: '450px' }} header="Detalles de la especialidad" modal className="p-fluid" footer={specialtyDialogFooter} onHide={hideDialog}>
+      <Dialog visible={specialtyDialog} style={{ width: '550px' }} header="Detalles de la especialidad" modal className="p-fluid" footer={specialtyDialogFooter} onHide={hideDialog}>
         <div className="field">
           <label htmlFor="name">Nombre</label>
           <InputText

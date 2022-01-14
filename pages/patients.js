@@ -7,26 +7,22 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { Dropdown } from 'primereact/dropdown';
-import { MultiSelect } from 'primereact/multiselect';
 import { Calendar } from 'primereact/calendar';
 import { addLocale } from 'primereact/api';
 
 import {
-  getSpecialtiesWS,
-} from '../services/specialty.service';
-import {
-  getDoctorsWS,
-  saveDoctorWS,
-  updateDoctorWS,
-  deleteDoctorWS,
-} from '../services/doctors.service';
+  getPatientWS,
+  savePatientWS,
+  updatePatientWS,
+  deletePatientWS,
+} from '../services/patient.service';
 import { locale_ES } from '../util/date';
 
-export default function doctors() {
+export default function Patients() {
 
   addLocale('es', locale_ES);
 
-  const emptyDoctor = {
+  const emptyPatient = {
     dni: '',
     dniType: 0,
     name: '',
@@ -37,7 +33,6 @@ export default function doctors() {
     city: '',
     birthDate: '',
     gender: '',
-    specialties: [],
   };
 
   const documentList = [
@@ -45,90 +40,83 @@ export default function doctors() {
     { label: 'Ruc', value: 2 },
     { label: 'Pasaporte', value: 3 },
   ];
+
   const genderList = [
     { label: 'Masculino', value: 'M' },
     { label: 'Femenino', value: 'F' },
   ];
 
-  const [doctor, setDoctor] = useState(emptyDoctor);
-  const [doctors, setDoctors] = useState([]);
-  const [specialties, setSpecialties] = useState([]);
+  const [patient, setPatient] = useState(emptyPatient);
+  const [patients, setPatients] = useState([]);
   const [submitted, setSubmitted] = useState(false);
-  const [doctorDialog, setDoctorDialog] = useState(false);
+  const [patientDialog, setPatientDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const toast = useRef();
 
   useEffect(() => {
-    fetchDoctors();
-    fetchSpecialties();
+    fetchPatients();
   }, []);
 
-  const fetchDoctors = async () => {
-    const { data } = await getDoctorsWS();
-    setDoctors(data);
+  const fetchPatients = async () => {
+    const { data } = await getPatientWS();
+    setPatients(data);
   }
 
-  const fetchSpecialties = async () => {
-    const { data } = await getSpecialtiesWS();
-    setSpecialties(data);
-  }
-
-  const editDoctor = (doctor) => {
-    setDoctor({...doctor});
-    setDoctorDialog(true);
+  const editPatient = (patient) => {
+    setPatient({...patient});
+    setPatientDialog(true);
   }
 
   const openNew = () => {
-    setDoctor(emptyDoctor);
+    setPatient(emptyPatient);
     setSubmitted(false);
-    setDoctorDialog(true);
+    setPatientDialog(true);
   }
 
   const hideDialog = () => {
     setSubmitted(false);
-    setDoctorDialog(false);
-    setDoctorDialog(false);
+    setPatientDialog(false);
   }
 
   const onInputChange = (e, name) => {
     const val = (e.target && e.target.value) || '';
-    let _doctor = {...doctor};
-    _doctor[`${name}`] = val;
+    let _patient = {...patient};
+    _patient[`${name}`] = val;
 
-    setDoctor(_doctor);
+    setPatient(_patient);
   }
 
-  const saveDoctor = async () => {
+  const savePatient = async () => {
     setSubmitted(true);
 
-    if (doctor.dni.trim() && doctor.name.trim()) {
+    if (patient.dni.trim() && patient.name.trim()) {
       setSubmitted(false);
-      let _doctor = {...doctor};
-      if (doctor.id) {
+      let _patient = {...patient};
+      if (patient.id) {
         try {
-          const { data: doctorResponse } = await updateDoctorWS(_doctor);
-          setDoctors(doctors.map((val) => (val.id === doctor.id) ? val = doctorResponse : val))
-          toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Doctor Actualizado', life: 5000 });
+          const { data: patientResponse } = await updatePatientWS(_patient);
+          setPatients(patients.map((val) => (val.id === patient.id) ? val = patientResponse : val))
+          toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'patient Actualizado', life: 5000 });
         } catch (error) {
-          return toast.current.show({ severity: 'error', summary: 'Error', detail: 'Ocurrio un problema al actualizar el médico', life: 5000 });
+          return toast.current.show({ severity: 'error', summary: 'Error', detail: 'Ocurrio un problema al actualizar el paciente', life: 5000 });
         }
         
       } else {
         try {
-          const { data: doctorResponse } = await saveDoctorWS(_doctor);
-          setDoctors([...doctors, doctorResponse]);
-          toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Doctor Creado', life: 5000 });
+          const { data: patientResponse } = await savePatientWS(_patient);
+          setPatients([...patients, patientResponse]);
+          toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'patient Creado', life: 5000 });
         } catch (error) {
-          return toast.current.show({ severity: 'error', summary: 'Error', detail: 'Ocurrio un problema al crear el médico', life: 5000 });
+          return toast.current.show({ severity: 'error', summary: 'Error', detail: 'Ocurrio un problema al crear el paciente', life: 5000 });
         }
       }
-      setDoctor(emptyDoctor);
-      setDoctorDialog(false);
+      setPatient(emptyPatient);
+      setPatientDialog(false);
     }
   }
 
-  const confirmDelete = (doctor) => {
-    setDoctor(doctor);
+  const confirmDelete = (patient) => {
+    setPatient(patient);
     setDeleteDialog(true);
   }
 
@@ -136,25 +124,23 @@ export default function doctors() {
     setDeleteDialog(false);
   }
 
-  const deleteDoctor = async () => {
-    await deleteDoctorWS(doctor);
-    let _doctors = doctors.filter(val => val.id !== doctor.id);
-    setDoctors(_doctors);
+  const deletePatient = async () => {
+    await deletePatientWS(patient);
+    let _patients = patients.filter(val => val.id !== patient.id);
+    setPatients(_patients);
     setDeleteDialog(false);
     
-    setDoctor(emptyDoctor);
+    setPatient(emptyPatient);
     toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Especialidad Eliminada', life: 5000 });
   }
 
-  const onDniTypeChange = (e) => setDoctor({ ...doctor, dniType: e.value });
+  const onDniTypeChange = (e) => setPatient({ ...patient, dniType: e.value });
 
-  const onSpecialtiesChange = (e) => setDoctor({ ...doctor, specialties: e.value });
-
-  const onGenderChange = (e) => setDoctor({ ...doctor, gender: e.value });
+  const onGenderChange = (e) => setPatient({ ...patient, gender: e.value });
 
   const header = (
     <div className="table-header flex justify-content-between">
-      Médicos
+      Pacientes
       <Button label='Nuevo' onClick={() => openNew()} />
     </div>
   );
@@ -164,7 +150,7 @@ export default function doctors() {
       <Button
         icon="pi pi-pencil"
         className="p-button-rounded p-button-success p-mr-2"
-        onClick={() => editDoctor(rowData)}
+        onClick={() => editPatient(rowData)}
       />
       <Button
         icon="pi pi-trash"
@@ -174,11 +160,7 @@ export default function doctors() {
     </>
   );
 
-  const specialtiesBodyTemplate = ({ specialties }) => (
-    <div className='specialties-item-value-container'>{specialties?.map(specialty => <div className='specialties-item-value' key={specialty.id}>{specialty.name}</div>)}</div>
-  );
-
-  const doctorDialogFooter = (
+  const patientDialogFooter = (
     <>
       <Button
         label="Cancelar"
@@ -190,7 +172,7 @@ export default function doctors() {
         label="Guardar"
         icon="pi pi-check"
         className="p-button-primary"
-        onClick={() => saveDoctor()}
+        onClick={() => savePatient()}
       />
     </>
   );
@@ -207,7 +189,7 @@ export default function doctors() {
         label="Si"
         icon="pi pi-check"
         className="p-button-primary"
-        onClick={deleteDoctor}
+        onClick={deletePatient}
       />
     </>
   );
@@ -236,7 +218,7 @@ export default function doctors() {
     <>
       <Toast ref={toast} />
       <DataTable
-        value={doctors}
+        value={patients}
         header={header}
         paginator
         rows={10}
@@ -247,89 +229,75 @@ export default function doctors() {
         <Column field="dni" header="Identificación" />
         <Column field="name" header="Nombres" />
         <Column field="surname" header="Apellidos" />
-        <Column header="Especialidades" body={specialtiesBodyTemplate} />
         <Column header="Gestionar" body={actionBodyTemplate} exportable={false} style={{ justifyContent: 'center', minWidth: '8rem' }} />
       </DataTable>
 
-      <Dialog visible={doctorDialog} style={{ width: '550px' }} header="Detalles del doctor" modal className="p-fluid" footer={doctorDialogFooter} onHide={hideDialog}>
+      <Dialog visible={patientDialog} style={{ width: '550px' }} header="Detalles del paciente" modal className="p-fluid" footer={patientDialogFooter} onHide={hideDialog}>
         <div className="field">
           <label htmlFor="dniType">Tipo Identificación</label>
           <Dropdown
             id="dniType"
-            value={doctor.dniType}
+            value={patient.dniType}
             options={documentList}
             optionLabel="label"
             optionValue="value"
             onChange={onDniTypeChange}
-            className={classNames({ 'p-invalid': submitted && !doctor.dniType })}
+            className={classNames({ 'p-invalid': submitted && !patient.dniType })}
           />
-          {submitted && !doctor.dniType && <p className="p-error text-sm">Este campo es requerido.</p>}
+          {submitted && !patient.dniType && <p className="p-error text-sm">Este campo es requerido.</p>}
         </div>
         <div className="field">
           <label htmlFor="dni">Identificación</label>
           <InputText
             id="dni"
-            value={doctor.dni}
+            value={patient.dni}
             required
-            className={classNames({ 'p-invalid': submitted && !doctor.dni })}
+            className={classNames({ 'p-invalid': submitted && !patient.dni })}
             onChange={(e) => onInputChange(e, 'dni')}
           />
-          {submitted && !doctor.dni && <p className="p-error text-sm">Este campo es requerido.</p>}
+          {submitted && !patient.dni && <p className="p-error text-sm">Este campo es requerido.</p>}
         </div>
         <div className="field">
           <label htmlFor="name">Nombres</label>
           <InputText
             id="name"
-            value={doctor.name}
+            value={patient.name}
             required
             autoFocus
-            className={classNames({ 'inputfield w-full p-invalid': submitted && !doctor.name })}
+            className={classNames({ 'inputfield w-full p-invalid': submitted && !patient.name })}
             onChange={(e) => onInputChange(e, 'name')}
           />
-          {submitted && !doctor.name && <p className="p-error text-sm">El nombre es requerido.</p>}
+          {submitted && !patient.name && <p className="p-error text-sm">El nombre es requerido.</p>}
         </div>
         <div className="field">
           <label htmlFor="surname">Apellidos</label>
           <InputText
             id="surname"
-            value={doctor.surname}
+            value={patient.surname}
             required
-            className={classNames({ 'p-invalid': submitted && !doctor.surname })}
+            className={classNames({ 'p-invalid': submitted && !patient.surname })}
             onChange={(e) => onInputChange(e, 'surname')}
           />
-          {submitted && !doctor.surname && <p className="p-error text-sm">Este campo es requerido.</p>}
-        </div>
-        <div className="field">
-          <label htmlFor="dniType">Especialidades</label>
-          <MultiSelect
-            filter
-            value={doctor.specialties}
-            options={specialties}
-            optionLabel="name"
-            onChange={onSpecialtiesChange}
-            selectedItemTemplate={selectedSpecialtiesTemplate}
-            className={classNames({ 'p-invalid': submitted && (doctor.specialties.length <= 0) })}
-          />
-          {submitted && (doctor.specialties.length <= 0) && <p className="p-error text-sm">Este campo es requerido.</p>}
+          {submitted && !patient.surname && <p className="p-error text-sm">Este campo es requerido.</p>}
         </div>
         <div className="field">
           <label htmlFor="gender">Género</label>
           <Dropdown
             id="gender"
-            value={doctor.gender}
+            value={patient.gender}
             options={genderList}
             onChange={onGenderChange}
             optionLabel="label"
             optionValue="value"
           />
-          {submitted && !doctor.gender && <p className="p-error text-sm">Este campo es requerido.</p>}
+          {submitted && !patient.gender && <p className="p-error text-sm">Este campo es requerido.</p>}
         </div>
         <div className="field">
           <label htmlFor="birthDate">Fecha de nacimiento</label>
           <Calendar
             id="birthDate"
-            value={new Date(doctor.birthDate)}
-            onChange={({ value }) => setDoctor({ ...doctor, birthDate: new Date(value).toISOString() })}
+            value={new Date(patient.birthDate)}
+            onChange={({ value }) => setPatient({ ...patient, birthDate: new Date(value).toISOString() })}
             showIcon
             locale="es"
             dateFormat="dd/mm/yy"
@@ -339,60 +307,60 @@ export default function doctors() {
             monthNavigatorTemplate={monthNavigatorTemplate}
             yearNavigatorTemplate={yearNavigatorTemplate}
             touchUI
-            className={classNames({ 'p-invalid': submitted && !doctor.birthDate })}
+            className={classNames({ 'p-invalid': submitted && !patient.birthDate })}
           />
-          {submitted && !doctor.birthDate && <p className="p-error text-sm">Este campo es requerido.</p>}
+          {submitted && !patient.birthDate && <p className="p-error text-sm">Este campo es requerido.</p>}
         </div>
         <div className="field">
           <label htmlFor="address">Dirección</label>
           <InputText
             id="address"
-            value={doctor.address}
+            value={patient.address}
             required
-            className={classNames({ 'p-invalid': submitted && !doctor.address })}
+            className={classNames({ 'p-invalid': submitted && !patient.address })}
             onChange={(e) => onInputChange(e, 'address')}
           />
-          {submitted && !doctor.address && <p className="p-error text-sm">Este campo es requerido.</p>}
+          {submitted && !patient.address && <p className="p-error text-sm">Este campo es requerido.</p>}
         </div>
         <div className="field">
           <label htmlFor="email">Email</label>
           <InputText
             id="email"
-            value={doctor.email}
+            value={patient.email}
             required
-            className={classNames({ 'p-invalid': submitted && !doctor.email })}
+            className={classNames({ 'p-invalid': submitted && !patient.email })}
             onChange={(e) => onInputChange(e, 'email')}
           />
-          {submitted && !doctor.email && <p className="p-error text-sm">Este campo es requerido.</p>}
+          {submitted && !patient.email && <p className="p-error text-sm">Este campo es requerido.</p>}
         </div>
         <div className="field">
           <label htmlFor="phone">Teléfono</label>
           <InputText
             id="phone"
-            value={doctor.phone}
+            value={patient.phone}
             required
-            className={classNames({ 'p-invalid': submitted && !doctor.phone })}
+            className={classNames({ 'p-invalid': submitted && !patient.phone })}
             onChange={(e) => onInputChange(e, 'phone')}
           />
-          {submitted && !doctor.phone && <p className="p-error text-sm">Este campo es requerido.</p>}
+          {submitted && !patient.phone && <p className="p-error text-sm">Este campo es requerido.</p>}
         </div>
         <div className="field">
           <label htmlFor="city">Ciudad</label>
           <InputText
             id="city"
-            value={doctor.city}
+            value={patient.city}
             required
-            className={classNames({ 'p-invalid': submitted && !doctor.city })}
+            className={classNames({ 'p-invalid': submitted && !patient.city })}
             onChange={(e) => onInputChange(e, 'city')}
           />
-          {submitted && !doctor.city && <p className="p-error text-sm">Este campo es requerido.</p>}
+          {submitted && !patient.city && <p className="p-error text-sm">Este campo es requerido.</p>}
         </div>
       </Dialog>
 
       <Dialog visible={deleteDialog} style={{ width: '450px' }} header="Confirmar" modal className="p-fluid" footer={deleteDialogFooter} onHide={hideDeleteDialog}>
         <div className="flex align-items-center">
           <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
-          {doctor && <span>¿ Esta seguro de eliminar <b>{doctor.dni} - {doctor.name} {doctor.surname}</b> ?</span>}
+          {patient && <span>¿ Esta seguro de eliminar <b>{patient.dni} - {patient.name} {patient.surname}</b> ?</span>}
         </div>
       </Dialog>
     </>

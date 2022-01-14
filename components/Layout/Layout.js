@@ -1,29 +1,35 @@
+import { useEffect, useState } from 'react';
 import { Container, Navbar, Main } from './Layout.styles'
 import Link from 'next/link'
 
 const Layout = ({ children }) => {
+
+  const [functionalities, setFunctionalities] = useState([]);
+
+  useEffect(() => {
+    const functionalities = JSON.parse(localStorage.getItem("functionalities"));
+    setFunctionalities(functionalities);
+    console.log('functionalities', functionalities);
+  }, []);
+
+  const onHandlerLogout = () => {
+    localStorage.clear();
+  }
+
   return (
     <Container>
       <Navbar>
         <ul>
-          <li>
-            <Link href="/home">
-              <a>Inicio</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/specialties">
-              <a>Especialidades</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/doctors">
-              <a>Médicos</a>
-            </Link>
-          </li>
+          {functionalities?.map(functionality => (
+            <li>
+              <Link href={functionality.url}>
+                <a>{functionality.name}</a>
+              </Link>
+            </li>
+          ))}
           <li>
             <Link href="/">
-              <a>Salir</a>
+              <a onClick={onHandlerLogout}>Salir</a>
             </Link>
           </li>
         </ul>

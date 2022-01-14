@@ -13,3 +13,18 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.specialties-item-value-container, .p-multiselect-items-label {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.specialties-item-value {
+  width: auto;
+  padding: .25rem .5rem;
+  margin: .1rem .1rem;
+  border-radius: 3px;
+  display: inline-flex;
+  background-color: var(--primary-color);
+  color: var(--primary-color-text);
+}
