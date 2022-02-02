@@ -19,7 +19,7 @@ import {
   saveDoctorWS,
   updateDoctorWS,
   deleteDoctorWS,
-} from '../services/doctors.service';
+} from '../services/doctor.service';
 import { locale_ES } from '../util/date';
 
 export default function doctors() {

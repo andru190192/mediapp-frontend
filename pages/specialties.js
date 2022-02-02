@@ -185,6 +185,7 @@ export default function Specialties() {
         // scrollHeight="flex"
         stripedRows
       >
+        <Column field="id" header="Código" />
         <Column field="name" header="Nombre" />
         <Column field="description" header="Descripción" />
         <Column header="Gestionar" body={actionBodyTemplate} exportable={false} style={{ justifyContent: 'center', minWidth: '8rem' }}></Column>

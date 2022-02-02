@@ -6,7 +6,6 @@ import '../styles/globals.css'
 import Layout from '../components/Layout'
 
 function MyApp({ Component, pageProps }) {
-
   switch (Component.name) {
     case 'Login':
       return <Component {...pageProps} />;

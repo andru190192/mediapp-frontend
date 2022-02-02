@@ -9,7 +9,6 @@ const Layout = ({ children }) => {
   useEffect(() => {
     const functionalities = JSON.parse(localStorage.getItem("functionalities"));
     setFunctionalities(functionalities);
-    console.log('functionalities', functionalities);
   }, []);
 
   const onHandlerLogout = () => {
@@ -21,7 +20,7 @@ const Layout = ({ children }) => {
       <Navbar>
         <ul>
           {functionalities?.map(functionality => (
-            <li>
+            <li key={functionality.id}>
               <Link href={functionality.url}>
                 <a>{functionality.name}</a>
               </Link>

@@ -7,7 +7,6 @@ import { classNames } from 'primereact/utils';
 import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from 'primereact/calendar';
 import { addLocale } from 'primereact/api';
-;
 import { useRouter } from 'next/router';
 
 import {
@@ -16,7 +15,7 @@ import {
 import {
   loginWS,
 } from '../../services/login.service';
-import { locale_ES } from 'util/date';
+import { locale_ES } from '../../util/date';
 
 const Login = () => {
 
@@ -67,10 +66,14 @@ const Login = () => {
     if (user.username.trim() && user.password.trim()) {
       try {
         const { data } = await loginWS(user);
-        console.log(data.data.functionalities);
-        localStorage.setItem('functionalities', JSON.stringify(data.data.functionalities));
+        console.log(data);
+        // se guarda en el localstorage los datos del menú, usuario, paciente y medico que inicia sesión
+        localStorage.setItem('functionalities', JSON.stringify(data?.data?.functionalities));
+        localStorage.setItem('user', JSON.stringify(data?.data?.user));
+        localStorage.setItem('patient', JSON.stringify(data?.data?.patient));
+        localStorage.setItem('doctor', JSON.stringify(data?.data?.doctor));
         router.push('/home');
-        toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Login', life: 5000 });
+        // toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Login', life: 5000 });
       } catch (error) {
         console.log(error?.response?.data?.error);
         const { title, message} = error?.response?.data?.error;
@@ -155,8 +158,9 @@ const Login = () => {
   return (
     <>
     <Toast ref={toast} />
-    <div className="p-8">
+    <div style={{ margin: '5rem 30rem' }}>
       <div className="shadow-2 surface-card p-4 border-round flex flex-column justify-content-center">
+        <h1 className='text-center'>Inicio de Sesión</h1>
         <div className="field">
           <label htmlFor="username">Usuario</label>
           <InputText

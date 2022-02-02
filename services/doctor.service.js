@@ -46,3 +46,5 @@ export const deleteDoctorWS = async (doctor) => {
     });
   }
 }
+
+export const getDoctorsBySpecialtyWS = async (specialty) => await axios.get(`${URL_BASE}/doctors/specialty/${specialty.id}`);
