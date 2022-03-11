@@ -111,7 +111,7 @@ export default function Exams() {
           setExams([...exams, examResponse]);
           toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Examen Creado', life: 5000 });
         } catch (error) {
-          return toast.current.show({ severity: 'error', summary: 'Error', detail: 'Ocurrio un problema al crear el examen', life: 5000 });
+          return toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se puede crear un examen con un nombre que ya existe', life: 5000 });
         }
       }
 

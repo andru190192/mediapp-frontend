@@ -14,4 +14,6 @@ export const getByPatientAndDateAndStatus = async (request) =>  await axios.post
 
 export const getByDoctorAndDate = async (request) =>  await axios.post(`${URL_BASE}/appointments/getByDoctorAndDate`, request);
 
+export const getByPatientAndStatus = async (request) =>  await axios.post(`${URL_BASE}/appointments/getByPatientAndStatus`, request);
+
 export const getById = async (id) =>  await axios.get(`${URL_BASE}/appointments/${id}`);
